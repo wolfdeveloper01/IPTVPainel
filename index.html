@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Management Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>IPTV Management Panel</h1>
+        <form id="iptvForm">
+            <label for="iptvUrl">IPTV URL:</label>
+            <input type="text" id="iptvUrl" placeholder="https://lib.bz" required>
+
+            <label for="githubDomain">GitHub Domain:</label>
+            <input type="text" id="githubDomain" placeholder="site.github.io" required>
+
+            <button type="submit">Generate Retransmission URL</button>
+        </form>
+
+        <div id="result">
+            <h3>Retransmission URL:</h3>
+            <p id="retransUrl"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
