@@ -31,13 +31,8 @@ label {
     display: block;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
+input[type="file"] {
     margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
 }
 
 button {
@@ -56,15 +51,34 @@ button:hover {
     background-color: #218838;
 }
 
-#result {
-    display: none;
+#fileListContainer {
     margin-top: 20px;
 }
 
-#retransUrl {
-    background-color: #e9ecef;
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
     padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+button.activate, button.deactivate {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
     border-radius: 4px;
-    font-size: 16px;
-    word-break: break-word;
+}
+
+button.activate {
+    background-color: #28a745;
+    color: white;
+}
+
+button.deactivate {
+    background-color: #dc3545;
+    color: white;
 }
