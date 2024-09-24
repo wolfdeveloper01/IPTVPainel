@@ -1,67 +1,55 @@
-// Variável para armazenar arquivos e seus status
-let files = [];
+let channels = []; // Lista de canais
+let currentChannelIndex = 0;
 
-document.getElementById('uploadForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Função para buscar e carregar o arquivo .m3u da URL
+function loadM3U(url) {
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            channels = parseM3U(data);
+            if (channels.length > 0) {
+                loadChannel(0);
+                document.getElementById('status').textContent = "Playing first channel.";
+            } else {
+                document.getElementById('status').textContent = "No valid channels found in the file.";
+            }
+        })
+        .catch(error => {
+            document.getElementById('status').textContent = "Failed to load channels.";
+            console.error("Error loading .m3u file:", error);
+        });
+}
 
-    // Obtenha o arquivo .m3u8 carregado
-    const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
+// Função para extrair URLs dos canais do arquivo .m3u
+function parseM3U(content) {
+    const lines = content.split('\n');
+    return lines.filter(line => line.trim().startsWith('http'));
+}
 
-    // Verifica se o arquivo é válido
-    if (file && file.name.endsWith('.m3u8')) {
-        // Adicionar arquivo à lista com status "Ativado"
-        files.push({ name: file.name, status: 'Active' });
-        renderFileList();
+// Carregar um canal
+function loadChannel(index) {
+    const videoPlayer = document.getElementById('videoPlayer');
+    videoPlayer.src = channels[index];
+    currentChannelIndex = index;
+    document.getElementById('status').textContent = `Playing channel ${index + 1}/${channels.length}`;
+}
+
+// Alternar entre canais
+document.getElementById('prevChannel').addEventListener('click', function() {
+    if (currentChannelIndex > 0) {
+        loadChannel(currentChannelIndex - 1);
+    } else {
+        document.getElementById('status').textContent = "You're on the first channel.";
     }
-
-    // Limpar o input do arquivo
-    fileInput.value = '';
 });
 
-// Renderizar a lista de arquivos
-function renderFileList() {
-    const tbody = document.querySelector('#fileList tbody');
-    tbody.innerHTML = ''; // Limpar lista anterior
-
-    // Adicionar cada arquivo à tabela
-    files.forEach((file, index) => {
-        const row = document.createElement('tr');
-        
-        // Nome do arquivo
-        const nameCell = document.createElement('td');
-        nameCell.textContent = file.name;
-        row.appendChild(nameCell);
-        
-        // Status do arquivo
-        const statusCell = document.createElement('td');
-        statusCell.textContent = file.status;
-        row.appendChild(statusCell);
-
-        // Botões de Ação (Ativar/Desativar)
-        const actionCell = document.createElement('td');
-        const actionButton = document.createElement('button');
-        actionButton.textContent = file.status === 'Active' ? 'Deactivate' : 'Activate';
-        actionButton.className = file.status === 'Active' ? 'deactivate' : 'activate';
-        
-        // Adicionar evento ao botão de ativação/desativação
-        actionButton.addEventListener('click', function() {
-            toggleStatus(index);
-        });
-        
-        actionCell.appendChild(actionButton);
-        row.appendChild(actionCell);
-
-        tbody.appendChild(row);
-    });
-}
-
-// Alternar status de ativado/desativado
-function toggleStatus(index) {
-    if (files[index].status === 'Active') {
-        files[index].status = 'Inactive';
+document.getElementById('nextChannel').addEventListener('click', function() {
+    if (currentChannelIndex < channels.length - 1) {
+        loadChannel(currentChannelIndex + 1);
     } else {
-        files[index].status = 'Active';
+        document.getElementById('status').textContent = "You're on the last channel.";
     }
-    renderFileList();
-}
+});
+
+// Carregar canais da URL do arquivo .m3u
+loadM3U('https://lib.bz/br.m3u');
